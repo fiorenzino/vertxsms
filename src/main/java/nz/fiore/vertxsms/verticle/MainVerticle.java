@@ -42,7 +42,7 @@ public class MainVerticle extends AbstractVerticle {
             address = "localhost";
             port = "8080";
         }
-        router.route().handler(StaticHandler.create("assets"));
+        router.routeWithRegex("^(?!/api).+").handler(StaticHandler.create("assets"));
 
 
         logger.info("address: " + address + ", port: " + port);
