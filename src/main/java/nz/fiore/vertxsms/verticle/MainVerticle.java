@@ -1,6 +1,7 @@
 package nz.fiore.vertxsms.verticle;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
@@ -11,8 +12,15 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.handler.TemplateHandler;
+import io.vertx.ext.web.templ.MVELTemplateEngine;
+import nz.fiore.vertxsms.common.AbstractRepository;
+import nz.fiore.vertxsms.common.Repository;
 import nz.fiore.vertxsms.management.AppConstants;
+import nz.fiore.vertxsms.model.Message;
+import nz.fiore.vertxsms.repository.MessageRepository;
 import nz.fiore.vertxsms.service.rs.MessageRepositoryRs;
+import nz.fiore.vertxsms.service.rs.MessageRepositoryWeb;
 
 import static nz.fiore.vertxsms.management.AppConstants.*;
 
@@ -24,7 +32,7 @@ public class MainVerticle extends AbstractVerticle {
     private final static Logger logger = LoggerFactory.getLogger(MainVerticle.class);
 
     private JDBCClient jdbcClient;
-    private boolean local = false;
+    private boolean local = true;
 
     @Override
     public void start() throws Exception {
@@ -42,6 +50,16 @@ public class MainVerticle extends AbstractVerticle {
             address = "localhost";
             port = "8080";
         }
+
+        MVELTemplateEngine templateEngine = MVELTemplateEngine.create();
+        templateEngine.setExtension(".html");
+        TemplateHandler templateHandler = TemplateHandler.create(templateEngine, "templates", "text/html");
+
+        MessageRepository messageRepository = new MessageRepository(jdbcClient);
+
+        MessageRepositoryWeb messageRepositoryWeb = new MessageRepositoryWeb(router, messageRepository, vertx, templateHandler, "/dynamic/messages/");
+        vertx.deployVerticle(messageRepositoryWeb);
+
         router.routeWithRegex("^(?!/api).+").handler(StaticHandler.create("assets"));
 
 

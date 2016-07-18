@@ -13,10 +13,10 @@ public class AppConstants {
 
 
     // mysql
-    public static final String MYSQL_URL = "jdbc:mysql://localhost:3306/vertxsms";
+    public static final String MYSQL_URL = "jdbc:mysql://localhost:3306/vota";
     public static final String MYSQL_DRIVERCLASS = "com.mysql.jdbc.Driver";
-    public static final String MYSQL_USER = "vertxsms";
-    public static final String MYSQL_PWD = "vertxsms";
+    public static final String MYSQL_USER = "root";
+    public static final String MYSQL_PWD = "flower";
     public static final int MYSQL_MAXPOOLSIZE = 30;
 
     public static final int PORT = 8080;

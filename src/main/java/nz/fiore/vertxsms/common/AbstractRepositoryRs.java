@@ -63,7 +63,7 @@ abstract public class AbstractRepositoryRs<T> extends AbstractVerticle {
     protected void startWebApp(Handler<AsyncResult<HttpServer>> next) {
         router.post(this.path).handler(this::simple);
         router.get(this.path).handler(this::getList);
-//        router.get(this.path + "/:id").handler(this::fetch);
+        router.get(this.path + "/:id").handler(this::fetch);
 //        router.put(this.path + "/:id").handler(this::update);
 //        router.delete(this.path + ":id").handler(this::delete);
         next.handle(Future.succeededFuture());
