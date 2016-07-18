@@ -64,13 +64,13 @@ abstract public class AbstractRepositoryWeb<T> extends AbstractVerticle {
 
     protected void startWebApp(Handler<AsyncResult<HttpServer>> next) {
         logger.info(this.path);
-        router.route(this.path + "*").handler(templateHandler);
         router.get(this.path + "list.html").handler(this::getList);
         router.post(this.path).handler(this::create);
         router.get(this.path + "view.html/:id").handler(this::fetch);
         router.get(this.path + "edit.html/:id").handler(this::fetch);
         router.put(this.path + "view.html/:id").handler(this::update);
         router.delete(this.path + ":id").handler(this::delete);
+        router.route(this.path + "*").handler(templateHandler);
         next.handle(Future.succeededFuture());
     }
 
@@ -88,6 +88,8 @@ abstract public class AbstractRepositoryWeb<T> extends AbstractVerticle {
             Session session = routingContext.session();
             session.put("element", single.result());
         });
+        routingContext.next();
+
 
     }
 
@@ -107,6 +109,7 @@ abstract public class AbstractRepositoryWeb<T> extends AbstractVerticle {
             Session session = routingContext.session();
             session.put("element", result.result().getRows().get(0));
         });
+        routingContext.next();
     }
 
 
@@ -129,6 +132,7 @@ abstract public class AbstractRepositoryWeb<T> extends AbstractVerticle {
                     session.put("element", updated.result());
 
                 });
+        routingContext.next();
     }
 
     protected void delete(RoutingContext routingContext) {
@@ -148,6 +152,7 @@ abstract public class AbstractRepositoryWeb<T> extends AbstractVerticle {
                     }
                 }
         );
+        routingContext.next();
 
     }
 
@@ -167,6 +172,7 @@ abstract public class AbstractRepositoryWeb<T> extends AbstractVerticle {
                     session.put("list", ts);
                 }
         );
+        routingContext.next();
     }
 
 
